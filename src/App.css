@@ -1,27 +1,27 @@
-.App {
-  text-align: center;
+/* app.tsx */
+.container {
+  background: rgba(0, 0, 0, 0.1);
 }
-
-.loader-container {
+.wrapper {
+  max-width: 786px;
+  background: rgba(0, 0, 0, 0.2);
+  margin: auto;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 200px;
+}
+.header {
+  font-size: 2rem;
+}
+.input {
+  color: #333;
+  font-size: 1.2rem;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+  border-radius: 0.2rem;
+  border: none;
+  border-bottom: 0.3rem solid transparent;
+  transition: all 0.3s;
 }
 
-.forecast-container {
-  margin-top: 20px;
-}
-
-.forecast-container ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.forecast-container li {
-  margin-bottom: 20px;
-}
-
-.map-container {
-  margin-top: 20px;
-}
+/* weather forecast */

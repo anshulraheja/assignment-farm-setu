@@ -1,60 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {
-  GoogleMap,
-  LoadScript,
-  Marker,
-} from '@react-google-maps/api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-interface Location {
-  latitude: number;
-  longitude: number;
-}
-
-interface DailyForecast {
-  dt: number;
-  temp: {
-    day: number;
-  };
-  pop: number;
-}
-
-const mapContainerStyle = {
-  width: '100%',
-  height: '400px',
-};
-
-const center: google.maps.LatLngLiteral = {
-  lat: 0,
-  lng: 0,
-};
+import WeatherForecast from './components/WeatherForecast';
+import MapContainer from './components/MapContainer';
+import { Location, WeatherData } from './types';
+import './App.css';
 
 const App: React.FC = () => {
-  const apiKey = '895284fb2d2c50a520ea537456963d9c'; //'b110c67631fe4e360321609e59593b18';
-  const googleMapsApiKey = 'AIzaSyCkKvA0IfBa2EVsB5ZReTBBakTQLmWk6kc';
-
   const [loading, setLoading] = useState<boolean>(false);
   const [location, setLocation] = useState<Location | null>(null);
-  const [forecastData, setForecastData] = useState<DailyForecast[]>(
-    []
-  );
-  const [historicalData, setHistoricalData] = useState<any[]>([]);
-
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [forecastData, setForecastData] = useState<WeatherData>();
 
-  const handleSearch = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setSearchQuery(event.target.value);
-  };
+  const openWeatherMapApiKey = '895284fb2d2c50a520ea537456963d9c';
+  const googleMapsApiKey = 'AIzaSyCkKvA0IfBa2EVsB5ZReTBBakTQLmWk6kc';
 
   useEffect(() => {
     if (navigator.geolocation) {
       setLoading(true);
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          console.log('position', position);
           setLocation({
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
@@ -63,6 +30,7 @@ const App: React.FC = () => {
         (error) => {
           toast.error('Failed to retrieve location.');
           console.error(error);
+          setLoading(false);
         }
       );
     } else {
@@ -72,14 +40,15 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (location) {
-      const { latitude, longitude } = location;
+      setLoading(true);
 
       axios
         .get(
-          `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&appid=${apiKey}`
+          `https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=${openWeatherMapApiKey}`
         )
         .then((response) => {
-          setForecastData(response.data.daily);
+          console.log('weather data', response.data);
+          setForecastData(response.data);
           setLoading(false);
         })
         .catch((error) => {
@@ -87,87 +56,60 @@ const App: React.FC = () => {
           console.error(error);
           setLoading(false);
         });
-
-      axios
-        .get(
-          `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${apiKey}`
-        )
-        .then((response) => {
-          setHistoricalData(response.data.list);
-          setLoading(false);
-        })
-        .catch((error) => {
-          toast.error('Failed to retrieve historical data.');
-          console.error(error);
-          setLoading(false);
-        });
     }
-  }, [location, apiKey]);
+  }, [location]);
 
-  const renderForecast = (): JSX.Element => {
-    if (loading) {
-      return (
-        <div className="loader-container">
-          <div>Loading....</div>
-        </div>
-      );
+  const handleSearch = () => {
+    if (searchQuery.trim() !== '') {
+      if (searchQuery !== '') {
+        setLoading(true);
+
+        axios
+          .get(
+            `https://api.openweathermap.org/data/2.5/weather?q=${searchQuery}&appid=${openWeatherMapApiKey}`
+          )
+          .then((response) => {
+            console.log('seachQuery', response);
+            setForecastData(response.data);
+            setLoading(false);
+          })
+          .catch((error) => {
+            toast.error('Failed to retrieve location data.');
+            console.error(error);
+            setLoading(false);
+          });
+      }
+    } else {
+      toast.error('Please enter a valid location.');
     }
-
-    return (
-      <div className="forecast-container">
-        <h2>Daily Forecast</h2>
-        <ul>
-          {forecastData.map((day: DailyForecast, index: number) => (
-            <li key={index}>
-              <p>
-                Date: {new Date(day.dt * 1000).toLocaleDateString()}
-              </p>
-              <p>Temperature: {day.temp.day} &#8451;</p>
-              <p>Precipitation: {day.pop * 100}%</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  };
-
-  const renderMap = (): JSX.Element | null => {
-    if (loading || (!location && searchQuery === '')) {
-      return null;
-    }
-
-    if (searchQuery !== '' && !location) {
-      return <div>No location found for the search query.</div>;
-    }
-
-    return (
-      <div className="map-container">
-        <LoadScript googleMapsApiKey={googleMapsApiKey}>
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            center={location || center}
-            zoom={12}
-          >
-            {location && <Marker position={location} />}
-          </GoogleMap>
-        </LoadScript>
-      </div>
-    );
   };
 
   return (
-    <div className="App">
-      <h1>Weather App</h1>
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search location..."
-          value={searchQuery}
-          onChange={handleSearch}
+    <div className="container">
+      <div className="wrapper">
+        <h1 className="header">Weather App</h1>
+        <div className="">
+          <input
+            className="input"
+            type="text"
+            placeholder="Search location..."
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+          />
+          <button onClick={handleSearch}>Search</button>
+        </div>
+        <WeatherForecast
+          loading={loading}
+          forecastData={forecastData}
         />
       </div>
-      {renderForecast()}
-      {renderMap()}
+
+      {/* <MapContainer
+        loading={loading}
+        location={location}
+        searchQuery={searchQuery}
+        googleMapsApiKey={googleMapsApiKey}
+      /> */}
       <ToastContainer />
     </div>
   );
