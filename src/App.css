@@ -1,0 +1,27 @@
+.App {
+  text-align: center;
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.forecast-container {
+  margin-top: 20px;
+}
+
+.forecast-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.forecast-container li {
+  margin-bottom: 20px;
+}
+
+.map-container {
+  margin-top: 20px;
+}
