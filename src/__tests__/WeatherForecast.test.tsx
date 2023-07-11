@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import WeatherForecast from '../components/WeatherForecast';
+import WeatherForecast from '../components/WeatherForecast/WeatherForecast';
 
 describe('WeatherForecast', () => {
   it('should display loading message when loading prop is true', () => {

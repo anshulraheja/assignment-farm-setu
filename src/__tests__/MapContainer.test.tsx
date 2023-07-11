@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import MapContainer from '../components/MapContainer';
+import MapContainer from '../components/MapContainer/MapContainer';
 
 describe('MapContainer', () => {
   it('should display loading message when loading prop is true', () => {

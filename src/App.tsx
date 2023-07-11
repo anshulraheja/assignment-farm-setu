@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import WeatherForecast from './components/WeatherForecast';
-import MapContainer from './components/MapContainer';
+import WeatherForecast from './components/WeatherForecast/WeatherForecast.tsx';
+import MapContainer from './components/MapContainer/MapContainer.tsx';
 import { Location } from './types';
 import { fetchWeatherData } from './services/WeatherService.ts';
 import './App.css';
@@ -54,21 +54,18 @@ const App: React.FC = () => {
   }, [location]);
 
   return (
-    <div>
-      <div>Hello world! I am using React</div>
-      <div>
-        <h1>Weather App</h1>
-        <WeatherForecast
-          loading={loading}
-          forecastData={forecastData}
-        />
-      </div>
+    <div className="container">
+      <h1>Weather App</h1>
+      <WeatherForecast
+        loading={loading}
+        forecastData={forecastData}
+      />
       <MapContainer
         loading={loading}
         location={location}
         forecastData={forecastData}
       />
-      <ToastContainer />
+      <ToastContainer className="toast-container" />
     </div>
   );
 };
