@@ -1,54 +1,72 @@
 import React from 'react';
 import {
   GoogleMap,
+  InfoWindow,
   LoadScript,
   Marker,
+  OverlayView,
 } from '@react-google-maps/api';
-import { Location } from '../types';
+import { Location, WeatherData } from '../types';
+import { useJsApiLoader } from '@react-google-maps/api';
+import { kelvinToCelsius } from '../utils/temperatureUtils';
 
+const divStyle = {
+  padding: '5px',
+};
 interface MapContainerProps {
   loading: boolean;
   location: Location | null;
   searchQuery: string;
   googleMapsApiKey: string;
+  forecastData: WeatherData;
 }
 
-const mapContainerStyle = {
+const containerStyle = {
   width: '100%',
-  height: '400px',
-};
-
-const center: Location = {
-  latitude: 0,
-  longitude: 0,
+  height: '600px',
 };
 
 const MapContainer: React.FC<MapContainerProps> = ({
   loading,
   location,
-  searchQuery,
   googleMapsApiKey,
+  forecastData,
 }) => {
-  if (loading || (!location && searchQuery === '')) {
-    return null;
+  const currentPosition = {
+    lat: location?.latitude || 0,
+    lng: location?.longitude || 0,
+  };
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: googleMapsApiKey,
+  });
+
+  if (loading || !location) {
+    return <div>Please wait....</div>;
   }
 
-  if (searchQuery !== '' && !location) {
+  if (!location) {
     return <div>No location found for the search query.</div>;
   }
 
-  return (
-    <div className="map-container">
-      <LoadScript googleMapsApiKey={googleMapsApiKey}>
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          center={location || center}
-          zoom={12}
-        >
-          {location && <Marker position={location} />}
-        </GoogleMap>
-      </LoadScript>
-    </div>
+  return isLoaded ? (
+    <GoogleMap
+      mapContainerStyle={containerStyle}
+      center={currentPosition}
+      zoom={15}
+    >
+      <InfoWindow position={currentPosition}>
+        <div style={divStyle}>
+          <div>
+            <div>
+              Temp: {kelvinToCelsius(forecastData?.main?.temp)} °C
+            </div>
+            <div>Precipitation: {forecastData?.main?.humidity} %</div>
+          </div>
+        </div>
+      </InfoWindow>
+    </GoogleMap>
+  ) : (
+    <>No google map</>
   );
 };
 

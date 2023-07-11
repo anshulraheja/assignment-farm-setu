@@ -13,7 +13,7 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
   if (loading) {
     return (
       <div className="loader-container">
-        <div>Loading....</div>
+        <div>Load....</div>
       </div>
     );
   }
@@ -22,7 +22,7 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
     return null;
   }
 
-  return <div className="forecast-container"></div>;
+  return <div className="forecast-container">{forecastData?.id}</div>;
 };
 
 export default WeatherForecast;
