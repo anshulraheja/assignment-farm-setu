@@ -16,7 +16,6 @@ const containerStyle = {
   height: '400px',
   marginBottom: '2rem',
 };
-
 const MapContainer: React.FC<MapContainerProps> = ({
   loading,
   location,
@@ -27,7 +26,7 @@ const MapContainer: React.FC<MapContainerProps> = ({
     lng: location?.longitude || 0,
   };
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: 'AIzaSyCkKvA0IfBa2EVsB5ZReTBBakTQLmWk6kc',
+    googleMapsApiKey: `${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`,
   });
 
   if (loading || !location) {
