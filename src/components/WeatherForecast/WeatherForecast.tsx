@@ -1,11 +1,10 @@
 import React from 'react';
-import { WeatherData } from '../../types';
 import { kelvinToCelsius } from '../../utils/temperatureUtils';
 import './WeatherForecast.css';
 
 interface WeatherForecastProps {
   loading: boolean;
-  forecastData: WeatherData;
+  forecastData: any;
 }
 
 const WeatherForecast: React.FC<WeatherForecastProps> = ({

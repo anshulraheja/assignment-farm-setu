@@ -1,6 +1,6 @@
 import React from 'react';
 import { GoogleMap, InfoWindow } from '@react-google-maps/api';
-import { Location, WeatherData } from '../../types';
+import { Location } from '../../types';
 import { useJsApiLoader } from '@react-google-maps/api';
 import { kelvinToCelsius } from '../../utils/temperatureUtils';
 import './MapContainer.css';
@@ -8,7 +8,7 @@ import './MapContainer.css';
 interface MapContainerProps {
   loading: boolean;
   location: Location | null;
-  forecastData: WeatherData;
+  forecastData: any;
 }
 
 const containerStyle = {
