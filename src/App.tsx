@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import WeatherForecast from './components/WeatherForecast';
 import MapContainer from './components/MapContainer';
-import { Location, WeatherData } from './types';
+import { Location } from './types';
+import { fetchWeatherData } from './services/WeatherService.ts';
 import './App.css';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [location, setLocation] = useState<Location | null>(null);
-  const [forecastData, setForecastData] = useState<WeatherData>();
-
-  const openWeatherMapApiKey = '895284fb2d2c50a520ea537456963d9c';
-  const googleMapsApiKey = 'AIzaSyCkKvA0IfBa2EVsB5ZReTBBakTQLmWk6kc';
+  const [forecastData, setForecastData] = useState<any>(null);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -25,13 +22,13 @@ const App: React.FC = () => {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
           });
-          setLoading(false);
         },
         (error) => {
           toast.error('Failed to retrieve location.');
           console.error(error);
           setLoading(false);
-        }
+        },
+        { enableHighAccuracy: true }
       );
     } else {
       toast.error('Geolocation is not supported by this browser.');
@@ -41,11 +38,7 @@ const App: React.FC = () => {
   useEffect(() => {
     if (location) {
       setLoading(true);
-
-      axios
-        .get(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=${openWeatherMapApiKey}`
-        )
+      fetchWeatherData(location.latitude, location.longitude)
         .then((response) => {
           console.log('weather data', response.data);
           setForecastData(response.data);
@@ -61,9 +54,10 @@ const App: React.FC = () => {
   }, [location]);
 
   return (
-    <div className="container">
-      <div className="wrapper">
-        <h1 className="header">Weather App</h1>
+    <div>
+      <div>Hello world! I am using React</div>
+      <div>
+        <h1>Weather App</h1>
         <WeatherForecast
           loading={loading}
           forecastData={forecastData}
@@ -72,7 +66,6 @@ const App: React.FC = () => {
       <MapContainer
         loading={loading}
         location={location}
-        googleMapsApiKey={googleMapsApiKey}
         forecastData={forecastData}
       />
       <ToastContainer />

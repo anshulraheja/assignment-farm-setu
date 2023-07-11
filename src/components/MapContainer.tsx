@@ -16,8 +16,6 @@ const divStyle = {
 interface MapContainerProps {
   loading: boolean;
   location: Location | null;
-  searchQuery: string;
-  googleMapsApiKey: string;
   forecastData: WeatherData;
 }
 
@@ -29,7 +27,6 @@ const containerStyle = {
 const MapContainer: React.FC<MapContainerProps> = ({
   loading,
   location,
-  googleMapsApiKey,
   forecastData,
 }) => {
   const currentPosition = {
@@ -37,7 +34,7 @@ const MapContainer: React.FC<MapContainerProps> = ({
     lng: location?.longitude || 0,
   };
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: googleMapsApiKey,
+    googleMapsApiKey: 'AIzaSyCkKvA0IfBa2EVsB5ZReTBBakTQLmWk6kc',
   });
 
   if (loading || !location) {
