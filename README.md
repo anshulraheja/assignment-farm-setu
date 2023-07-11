@@ -23,10 +23,15 @@ To run the Weather App locally, follow these steps:
 
 1. Clone the repository
 2. Install the dependencies
-3. Obtain an API key from OpenWeatherMap:
-  - Sign up or log in to [OpenWeatherMap](https://openweathermap.org/)
-  - Generate an API key from your account dashboard
-4. Set up the API key
+3. Obtain an API key:
+  - Sign in to [OpenWeatherMap](https://openweathermap.org/)
+  - Sign in [Google Cloud Portal](https://console.cloud.google.com/) to key maps key
+4. Set up the API key in env file
+```js
+VITE_OPENWEATHERMAP_API_KEY=<Your Key>
+VITE_GOOGLE_MAPS_API_KEY=<Your Key>
+
+```
 5. Start the development server
 
 
